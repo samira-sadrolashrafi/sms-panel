@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css">
+    <title>ارسال پیامک</title>
+</head>
+<body>
+
+    <h1>ارسال پیامک</h1>
+
+    <div class="container">
+        <form class="max-w-sm mx-auto" action="">
+            <div>
+                <label class="block mb-2.5 text-sm font-medium text-heading" for="sender"> فرستنده </label>
+                <select class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" id="sender">
+                    <option selected>انتخاب فرستنده</option>
+                    <option value="1234567890">فرستنده 1</option>
+                    <option value="0987654321">فرستنده 2</option>
+                </select>
+            </div>
+            <div>
+                <label for="receiver"> شماره گیرنده </label>
+                <input type="text" id="receiver">
+            </div>
+            <div>
+                <label for="message"> متن پیام</label>
+                <textarea id="message" rows="4"></textarea>
+            </div>
+            <div class="timing_container">
+                <label for="timing"> زمان بندی ارسال </label>
+                <input type="checkbox" id="timing">
+                    <div class="timing_detail">
+                        date: <input type="date" id="date">
+                        time: <input type="time" id="time">
+                    </div>
+            </div>
+            <div>
+                <button type="submit">ارسال</button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+</body>
+</html>
