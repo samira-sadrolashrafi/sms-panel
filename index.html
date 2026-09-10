@@ -3,46 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="css/style.css">
     <title>ارسال پیامک</title>
 </head>
 <body>
 
-    <h1>ارسال پیامک</h1>
+    <div class="container w-full max-w-xl mx-auto mt-10 px-5" >
 
-    <div class="container">
-        <form class="max-w-sm mx-auto" action="">
+    <h1 class="text-2xl font-bold text-center mb-8">ارسال پیامک</h1>
+
+        <form action="" class="space-y-5">
             <div>
                 <label class="block mb-2.5 text-sm font-medium text-heading" for="sender"> فرستنده </label>
                 <select class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" id="sender">
-                    <option selected>انتخاب فرستنده</option>
-                    <option value="1234567890">فرستنده 1</option>
-                    <option value="0987654321">فرستنده 2</option>
+                    <option value="0921568492" selected> 0921568492 (پیشفرض)</option>
+                    <option value="1234567890">فرستنده 1: 1234567890</option>
+                    <option value="0987654321">فرستنده 2: 0987654321</option>
                 </select>
+                <p id="sender-error" class="error-message text-red-600 text-sm"></p>
             </div>
             <div>
-                <label for="receiver"> شماره گیرنده </label>
-                <input type="text" id="receiver">
+                <label for="receiver" class="block mb-2.5 text-sm font-medium text-heading"> شماره گیرنده </label>
+                <input type="text" id="receiver" class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs">
+                <p id="receiver-error" class="error-message text-red-600 text-sm"></p>
             </div>
             <div>
-                <label for="message"> متن پیام</label>
-                <textarea id="message" rows="4"></textarea>
+                <label for="message" class="block mb-2.5 text-sm font-medium text-heading"> متن پیام</label>
+                <textarea id="message" maxlength="160" rows="4" class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs"></textarea>
+                <p id="message-error" class="error-message text-red-600 text-sm"></p>
+                <p id="message-counter">0 / 160</p>
             </div>
             <div class="timing_container">
-                <label for="timing"> زمان بندی ارسال </label>
-                <input type="checkbox" id="timing">
-                    <div class="timing_detail">
-                        date: <input type="date" id="date">
-                        time: <input type="time" id="time">
+
+                <div class="flex items-center gap-3">
+                    <label for="timing" class="text-sm font-medium text-heading">
+                        زمان بندی ارسال
+                    </label>
+
+                    <input type="checkbox" id="timing" class="w-4 h-4 accent-blue-600">
+                </div>
+
+                <div class="timing_detail mt-4" style="display: none;">
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label for="date">تاریخ</label>
+                            <input type="date" id="date" class="block w-full border rounded px-3 py-2">
+                            <p id="date-error" class="text-red-600 text-sm"></p>
+                        </div>
+
+                        <div>
+                            <label for="time">ساعت</label>
+                            <input type="time" id="time" class="block w-full border rounded px-3 py-2">
+                            <p id="time-error" class="text-red-600 text-sm"></p>
+                        </div>
                     </div>
+                </div>
+
             </div>
-            <div>
-                <button type="submit">ارسال</button>
+            <div class="flex justify-center mt-5">
+                <button id="submit-btn" type="submit">ارسال</button>
             </div>
         </form>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
