@@ -1,25 +1,26 @@
 console.log('Script loaded successfully!');
 
-var inputElem = document.querySelector('#receiver');
-var receiverError = document.querySelector('#receiver-error');
-var messageInput = document.querySelector('#message');
-var messageCounter = document.querySelector('#message-counter');
-var timingCheckbox = document.querySelector('#timing');
-var timingDetail = document.querySelector('.timing_detail');
-var form = document.querySelector('form');
-var submitBtn = document.querySelector('#submit-btn');
-var formError=document.querySelector('#form-error');
+const inputElem = document.querySelector('#receiver');
+const receiverError = document.querySelector('#receiver-error');
+const messageInput = document.querySelector('#message');
+const messageCounter = document.querySelector('#message-counter');
+const timingCheckbox = document.querySelector('#timing');
+const timingDetail = document.querySelector('#timing-detail');
+const form = document.querySelector('form');
+const submitBtn = document.querySelector('#submit-btn');
+const messageCount = document.querySelector('#message-count')
 
-var senderError = document.querySelector('#sender-error');
-var messageError = document.querySelector('#message-error');
+const messageError = document.querySelector('#message-error');
 
-var dateInput = document.querySelector('#date');
-var timeInput = document.querySelector('#time');
+const dateInput = document.querySelector('#date');
+const timeInput = document.querySelector('#time');
 
-var dateError = document.querySelector('#date-error');
-var timeError = document.querySelector('#time-error');
+const dateError = document.querySelector('#date-error');
+const timeError = document.querySelector('#time-error');
+const formSuccess = document.querySelector("#form-success");
+const smsForm = document.querySelector("#sms-form");
 
-var errorTimer;
+let errorTimer=null;
 
 function showError(elementId, message) {
     elementId.textContent = message;
@@ -38,7 +39,7 @@ var tagify = new Tagify(inputElem, {
     validate: (tagData) => {
         return /^09\d{9}$/.test(tagData.value)
             ? true
-            : 'شماره موبایل باید با 09 شروع شود و 11 رقم باشد';
+            : 'شماره موبایل باید با 09 شروع شود و 11 رقم باشد.';
     }
 });
 
@@ -63,11 +64,16 @@ tagify.on('add', function(e){
 
     }
 
+    formSuccess.hidden = true;
+
 });
 
 messageInput.addEventListener('input', function(e) {
     var currentLength = e.target.value.length;
-    messageCounter.textContent = `${currentLength} / 160`;
+    messageCount.textContent = currentLength;
+
+    messageCounter.classList.toggle('is-empty', currentLength === 0);
+    messageCounter.classList.toggle('is-full', currentLength === 160);
 
     if(messageInput.value.trim() !== ''){
         clearError(messageError);
@@ -76,18 +82,20 @@ messageInput.addEventListener('input', function(e) {
 });
 
 timingCheckbox.addEventListener('change', function() {
-    if (timingCheckbox.checked) {
-        timingDetail.style.display = 'block';
-    } else {
-        timingDetail.style.display = 'none';
+    timingDetail.hidden = !timingCheckbox.checked;
+
+    if(!timingCheckbox.checked){
+        clearError(dateError);
+        clearError(timeError);
     }
 
-    
+    formSuccess.hidden=true;
 });
 
 
 form.addEventListener('submit', function(e) {
     e.preventDefault();
+    formSuccess.hidden=true;
 
     var sender = document.querySelector('#sender').value;
     var receiver = tagify.value.map(tag => tag.value);
@@ -95,41 +103,57 @@ form.addEventListener('submit', function(e) {
     var date = document.querySelector('#date').value;
     var time = document.querySelector('#time').value;
 
-    // clearError(receiverError);
-    // clearError(messageError);
-    // clearError(timingError);
+    let hasError = false;
 
     
     if (receiver.length === 0) {
         showError(receiverError, 'لطفاً حداقل یک شماره وارد کنید.');
-        return;
+        hasError=true;
     } else {
         clearError(receiverError);
     }
 
     if (message.trim() === '') {
         showError(messageError, 'لطفاً متن پیام را وارد کنید.');
-        return;
+        hasError=true;
+    } else{
+        clearError(messageError);
     }
 
     if (timingCheckbox.checked) {
         if (date === '') {
             showError(dateError, 'لطفاً تاریخ زمان بندی را وارد کنید.');
-            return;
-        } else if (time === '') {
+            hasError=true;
+        } else {
+            clearError(dateError);
+        }
+
+
+        if (time === '') {
             showError(timeError, 'لطفاً ساعت زمان بندی را وارد کنید.');
-            return;
+            hasError=true;
+        } else{
+            clearError(timeError);
         }
     }  
+
+    if(hasError) return;
+
+    formSuccess.hidden=false;
+
+    formSuccess.textContent="پیامک شما با موفقیت ارسال شد!";
+
+    console.log('داده‌های ارسالی:', { sender, receiver, message, date, time });
+
 });
 
-dateInput.addEventListener('change', function() {
+dateInput.addEventListener('input', function() {
     if(dateInput.value !== ''){
         clearError(dateError);
     }
 });
 
-timeInput.addEventListener('change', function() {
+timeInput.addEventListener('input', function() {
     if(timeInput.value !== ''){
         clearError(timeError);
     }

@@ -1,78 +1,105 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="css/style.css">
     <title>ارسال پیامک</title>
+
+    <!-- Flowbite: تنها منبع استایل (خودش Tailwind v4 کامل دارد) -->
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css" rel="stylesheet" />
+    <!-- Tagify: بخش ۳ خواسته کارفرما -->
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    <!-- استایل شخصی + ریسپانسیو با CSS خالی -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-    <div class="container w-full max-w-xl mx-auto mt-10 px-5" >
+    <main class="page-wrap">
+        <section class="sms-card bg-neutral-primary-soft border border-default rounded-base shadow-xs">
+            <h1 class="sms-title">ارسال پیامک</h1>
 
-    <h1 class="text-2xl font-bold text-center mb-8">ارسال پیامک</h1>
+            <form id="sms-form" class="sms-form" novalidate>
 
-        <form action="" class="space-y-5">
-            <div>
-                <label class="block mb-2.5 text-sm font-medium text-heading" for="sender"> فرستنده </label>
-                <select class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" id="sender">
-                    <option value="0921568492" selected> 0921568492 (پیشفرض)</option>
-                    <option value="1234567890">فرستنده 1: 1234567890</option>
-                    <option value="0987654321">فرستنده 2: 0987654321</option>
-                </select>
-                <p id="sender-error" class="error-message text-red-600 text-sm"></p>
-            </div>
-            <div>
-                <label for="receiver" class="block mb-2.5 text-sm font-medium text-heading"> شماره گیرنده </label>
-                <input type="text" id="receiver" class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs">
-                <p id="receiver-error" class="error-message text-red-600 text-sm"></p>
-            </div>
-            <div>
-                <label for="message" class="block mb-2.5 text-sm font-medium text-heading"> متن پیام</label>
-                <textarea id="message" maxlength="160" rows="4" class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs"></textarea>
-                <p id="message-error" class="error-message text-red-600 text-sm"></p>
-                <p id="message-counter">0 / 160</p>
-            </div>
-            <div class="timing_container">
-
-                <div class="flex items-center gap-3">
-                    <label for="timing" class="text-sm font-medium text-heading">
-                        زمان بندی ارسال
-                    </label>
-
-                    <input type="checkbox" id="timing" class="w-4 h-4 accent-blue-600">
+                <!-- ۲) فرستنده -->
+                <div class="field">
+                    <label for="sender" class="block mb-2.5 text-sm font-medium text-heading">فرستنده</label>
+                    <select id="sender"
+                        class="block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
+                        <option value="10009999888" selected>10009999888 (پیش‌فرض)</option>
+                        <option value="10009999889">10009999889</option>
+                        <option value="10009999890">10009999890</option>
+                    </select>
+                    <p id="sender-error" class="error-message"></p>
                 </div>
 
-                <div class="timing_detail mt-4" style="display: none;">
+                <!-- ۳) شماره گیرنده (Tagify) -->
+                <div class="field">
+                    <label for="receiver" class="block mb-2.5 text-sm font-medium text-heading">شماره گیرنده</label>
+                    <input type="text" id="receiver" placeholder="افزودن شماره..."
+                        class="block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
+                    <p id="receiver-error" class="error-message"></p>
+                </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                <!-- ۴) متن پیام (textarea) + ۵) شمارنده/ظرفیت -->
+                <div class="field">
+                    <label for="message" class="block mb-2.5 text-sm font-medium text-heading">متن پیام</label>
+                    <textarea id="message" rows="4" maxlength="160" placeholder="متن پیام خود را وارد کنید..."
+                        class="sms-textarea block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"></textarea>
+                    <p id="message-error" class="error-message"></p>
+                    <p id="message-counter" class="message-counter is-empty">
+                        <span id="message-count" class="count">0</span> / 160
+                    </p>
+                </div>
+
+                <!-- ۶) زمان‌بندی ارسال -->
+                <div class="field">
+                    <div class="toggle-box">
+                        <label for="timing" class="toggle-label">زمان‌بندی ارسال</label>
+                        <label class="switch">
+                        <input type="checkbox" id="timing" class="switch-input">
+                        <span class="switch-track"></span>
+                        </label>
+                    </div>
+
+                    <div id="timing-detail" class="schedule-detail" hidden>
                         <div>
-                            <label for="date">تاریخ</label>
-                            <input type="date" id="date" class="block w-full border rounded px-3 py-2">
-                            <p id="date-error" class="text-red-600 text-sm"></p>
+                            <label for="date" class="block mb-2.5 text-sm font-medium text-heading">تاریخ</label>
+                            <div class="input-icon-wrap">
+                                <input type="date" id="date"
+                                    class="block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs">
+                                <label for="date" class="icon-btn" aria-label="باز کردن تقویم">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/></svg>
+                                </label>
+                            </div>
+                            <p id="date-error" class="error-message"></p>
                         </div>
-
                         <div>
-                            <label for="time">ساعت</label>
-                            <input type="time" id="time" class="block w-full border rounded px-3 py-2">
-                            <p id="time-error" class="text-red-600 text-sm"></p>
+                            <label for="time" class="block mb-2.5 text-sm font-medium text-heading">ساعت</label>
+                            <div class="input-icon-wrap">
+                                <input type="time" id="time"
+                                    class="block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs">
+                                <label for="time" class="icon-btn" aria-label="باز کردن انتخاب ساعت">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                                </label>
+                            </div>
+                            <p id="time-error" class="error-message"></p>
                         </div>
                     </div>
+
                 </div>
 
-            </div>
-            <div class="flex justify-center mt-5">
-                <button id="submit-btn" type="submit">ارسال</button>
-            </div>
-        </form>
-    </div>
-    
+                <!-- ۷) دکمه ارسال -->
+                <button id="submit-btn" type="submit" class="submit-btn">ارسال</button>
+                <p id="form-success" class="success-message" hidden></p>
+            </form>
+        </section>
+    </main>
+
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
     <script src="js/script.js"></script>
 </body>
+
 </html>
