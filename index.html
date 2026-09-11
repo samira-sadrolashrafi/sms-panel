@@ -6,100 +6,141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ارسال پیامک</title>
 
-    <!-- Flowbite: تنها منبع استایل (خودش Tailwind v4 کامل دارد) -->
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css" rel="stylesheet" />
-    <!-- Tagify: بخش ۳ خواسته کارفرما -->
-    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
-    <!-- استایل شخصی + ریسپانسیو با CSS خالی -->
+    <!-- Tagify -->
+    <link rel="stylesheet" href="node_modules/@yaireo/tagify/dist/tagify.css">
+    <!-- Tailwind + Flowbite (خروجی بیلد) -->
+    <link rel="stylesheet" href="css/tailwind.css">
+    <!-- استایل‌های سفارشی (فقط Tagify و date picker) -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="bg-gray-100 min-h-screen font-[Vazirmatn]">
 
-    <main class="page-wrap">
-        <section class="sms-card bg-neutral-primary-soft border border-default rounded-base shadow-xs">
-            <h1 class="sms-title">ارسال پیامک</h1>
+    <!-- Toast -->
+    <div id="toast-success"
+        class="fixed top-5 left-1/2 -translate-x-1/2 flex items-center gap-3 w-[min(92vw,26rem)] bg-white border border-gray-200 border-r-4 border-r-green-600 rounded-xl px-4 py-3.5 shadow-lg transition-all duration-300 z-50 opacity-0 -translate-y-4 pointer-events-none"
+        role="status" aria-live="polite">
+        <span class="flex text-green-600" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+        </span>
+        <div class="flex flex-col gap-0.5 flex-1">
+            <strong class="text-sm font-bold text-gray-900">ارسال موفق</strong>
+            <span id="toast-message" class="text-xs text-gray-600">پیامک شما با موفقیت ارسال شد!</span>
+        </div>
+        <button type="button" class="toast-close flex text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-1 rounded-md transition-colors"
+            aria-label="بستن اعلان">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2" class="w-[1.125rem] h-[1.125rem]">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
 
-            <form id="sms-form" class="sms-form" novalidate>
+    <!-- Main Content -->
+    <main class="w-full max-w-[46rem] mx-auto px-4 py-6 lg:px-6 lg:py-12">
+        <section class="bg-white border border-gray-200 rounded-2xl p-5 lg:p-9 shadow-lg">
+            <h1 class="text-xl lg:text-2xl font-bold text-center text-gray-900 mb-5 lg:mb-9">ارسال پیامک</h1>
 
-                <!-- ۲) فرستنده -->
-                <div class="field">
-                    <label for="sender" class="block mb-2.5 text-sm font-medium text-heading">فرستنده</label>
+            <form id="sms-form" class="flex flex-col gap-5 lg:gap-6" novalidate>
+
+                <!-- فرستنده -->
+                <div>
+                    <label for="sender" class="block mb-2.5 text-sm font-medium text-gray-900">فرستنده</label>
                     <select id="sender"
-                        class="block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm">
                         <option value="10009999888" selected>10009999888 (پیش‌فرض)</option>
                         <option value="10009999889">10009999889</option>
                         <option value="10009999890">10009999890</option>
                     </select>
-                    <p id="sender-error" class="error-message"></p>
+                    <p id="sender-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
                 </div>
 
-                <!-- ۳) شماره گیرنده (Tagify) -->
-                <div class="field">
-                    <label for="receiver" class="block mb-2.5 text-sm font-medium text-heading">شماره گیرنده</label>
+                <!-- شماره گیرنده (Tagify) -->
+                <div>
+                    <div class="flex items-center justify-between mb-2.5">
+                        <label for="receiver" class="text-sm font-medium text-gray-900">شماره گیرنده</label>
+                        <button type="button" id="clear-all-tags"
+                            class="text-xs text-red-600 hover:bg-red-600 hover:text-white px-2 py-0.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-red-200 hidden">حذف
+                            همه</button>
+                    </div>
                     <input type="text" id="receiver" placeholder="افزودن شماره..."
-                        class="block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
-                    <p id="receiver-error" class="error-message"></p>
+                        class="block w-full text-sm text-gray-900 rounded-lg shadow-sm">
+                    <p id="receiver-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
                 </div>
 
-                <!-- ۴) متن پیام (textarea) + ۵) شمارنده/ظرفیت -->
-                <div class="field">
-                    <label for="message" class="block mb-2.5 text-sm font-medium text-heading">متن پیام</label>
+                <!-- متن پیام -->
+                <div>
+                    <label for="message" class="block mb-2.5 text-sm font-medium text-gray-900">متن پیام</label>
                     <textarea id="message" rows="4" maxlength="160" placeholder="متن پیام خود را وارد کنید..."
-                        class="sms-textarea block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"></textarea>
-                    <p id="message-error" class="error-message"></p>
-                    <p id="message-counter" class="message-counter is-empty">
-                        <span id="message-count" class="count">0</span> / 160
+                        class="block w-full p-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm placeholder:text-gray-400 min-h-[7rem] lg:min-h-[8.75rem] resize-y"></textarea>
+                    <p id="message-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
+                    <p id="message-counter" class="mt-2 text-sm text-gray-700 text-left" dir="ltr">
+                        <span id="message-count" class="font-semibold text-gray-500">0</span> / 160
                     </p>
                 </div>
 
-                <!-- ۶) زمان‌بندی ارسال -->
-                <div class="field">
-                    <div class="toggle-box">
-                        <label for="timing" class="toggle-label">زمان‌بندی ارسال</label>
-                        <label class="switch">
-                        <input type="checkbox" id="timing" class="switch-input">
-                        <span class="switch-track"></span>
+                <!-- زمان‌بندی ارسال -->
+                <div>
+                    <div class="flex items-center justify-between bg-white border border-gray-300 rounded-lg px-4 py-3">
+                        <label for="timing" class="text-sm font-medium text-gray-900 cursor-pointer">زمان‌بندی
+                            ارسال</label>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="timing" class="sr-only peer">
+                            <span
+                                class="w-11 h-6 bg-gray-200 rounded-full relative after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:rounded-full after:w-5 after:h-5 after:shadow-md after:transition-all peer-checked:bg-blue-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full transition-colors"></span>
                         </label>
                     </div>
 
-                    <div id="timing-detail" class="schedule-detail" hidden>
+                    <div id="timing-detail" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5 lg:mt-6 hidden">
                         <div>
-                            <label for="date" class="block mb-2.5 text-sm font-medium text-heading">تاریخ</label>
-                            <div class="input-icon-wrap">
+                            <label for="date" class="block mb-2.5 text-sm font-medium text-gray-900">تاریخ</label>
+                            <div class="relative">
                                 <input type="date" id="date"
-                                    class="block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs">
-                                <label for="date" class="icon-btn" aria-label="باز کردن تقویم">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/></svg>
-                                </label>
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ps-10 shadow-sm">
+                                <span
+                                    class="absolute start-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.8" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z" />
+                                    </svg>
+                                </span>
                             </div>
-                            <p id="date-error" class="error-message"></p>
+                            <p id="date-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
                         </div>
                         <div>
-                            <label for="time" class="block mb-2.5 text-sm font-medium text-heading">ساعت</label>
-                            <div class="input-icon-wrap">
+                            <label for="time" class="block mb-2.5 text-sm font-medium text-gray-900">ساعت</label>
+                            <div class="relative">
                                 <input type="time" id="time"
-                                    class="block w-full px-3 py-2.5 bg-neutral-primary border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs">
-                                <label for="time" class="icon-btn" aria-label="باز کردن انتخاب ساعت">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                                </label>
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ps-10 shadow-sm">
+                                <span
+                                    class="absolute start-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.8" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </span>
                             </div>
-                            <p id="time-error" class="error-message"></p>
+                            <p id="time-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- ۷) دکمه ارسال -->
-                <button id="submit-btn" type="submit" class="submit-btn">ارسال</button>
-                <p id="form-success" class="success-message" hidden></p>
+                <!-- دکمه ارسال -->
+                <button id="submit-btn" type="submit"
+                    class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-semibold rounded-lg text-sm px-5 py-3 shadow-sm transition-colors">ارسال</button>
             </form>
         </section>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
-    <script src="js/script.js"></script>
+    <script src="node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script src="node_modules/@yaireo/tagify/dist/tagify.js"></script>
+    <script src="js/script.js" defer></script>
 </body>
 
 </html>

@@ -1,253 +1,14 @@
 /* =====================================================
-   استایل شخصی + ریسپانسیو با CSS خالی (خواسته کارفرما)
-   استایل کامپوننت‌ها با Flowbite است؛ اینجا فقط چیدمان،
-   ریسپانسیو، تم Tagify و جزئیات ریز سفارشی است.
+   فقط استایل‌هایی که با Tailwind/Flowbite قابل پیاده‌سازی نیستند
 ===================================================== */
 
-/* =========================================
-   تعریف متغیرهای رنگی جاافتادهٔ Flowbite v4
-   (بدون این بلوک، کلاس‌های رنگی CDN بی‌اثر می‌شوند)
-========================================= */
-:root {
-    /* رنگ اصلی (آبی دکمه و حلقهٔ فوکوس) */
-    --color-brand: #1c64f2;
-    --color-brand-strong: #164bc4;
-    /* آبی تیره‌تر برای هاور */
-    --color-brand-medium: #93c5fd;
-    /* حلقهٔ نرم دور دکمه در فوکوس */
-    --color-brand-soft: #e1effe;
-    /* آبی خیلی روشن */
-
-    /* رنگ متن‌ها */
-    --color-heading: #111928;
-    /* متن تیترها و لیبل‌ها */
-    --color-body: #4b5563;
-    /* متن معمولی و placeholder */
-
-    /* رنگ حاشیه‌ها */
-    --color-default: #e5e7eb;
-    /* حاشیهٔ روشن */
-    --color-default-medium: #d1d5db;
-    /* حاشیهٔ کمی تیره‌تر فیلدها */
-
-    /* رنگ پس‌زمینه‌ها */
-    --color-neutral-primary: #ffffff;
-    /* سفید داخل فیلدها */
-    --color-neutral-primary-soft: #f8fafc;
-    /* خاکستری-آبی روشن کارت */
-    --color-neutral-quaternary: #e5e7eb;
-    /* بدنهٔ سوئیچ در حالت خاموش */
-    --color-neutral-tertiary: #d1d5db;
-    --color-neutral-tertiary-soft: #f3f4f6;
-
-    /* رنگ حاشیهٔ دکمهٔ داخلی سوئیچ وقتی روشن است */
-    --color-buffer: #ffffff;
-
-    /* رنگ‌های پیام موفقیت و خطا */
-    --color-success: #0e9f6e;
-    --color-danger: #f05252;
-}
-
 body {
-    font-family: "Vazirmatn", "IRANSansX", "Segoe UI", Tahoma, system-ui, sans-serif;
-    background-color: #eef2f7;
+    font-family: "Vazirmatn", "Inter", "Segoe UI", Tahoma, system-ui, sans-serif;
 }
 
-/* ظرف صفحه: موبایل/تبلت جمع‌وجور (سمت راست عکس) */
-.page-wrap {
-    max-width: 100%;
-    margin-inline: auto;
-    padding: 1.5rem 1rem;
-}
-
-.sms-card {
-    background: #f8fafc;
-    /* روشن‌تر از صفحه، تیره‌تر از فیلدها */
-    border: 1px solid #e5e7eb;
-    /* حاشیهٔ خیلی روشن */
-    border-radius: 1rem;
-    padding: 1.25rem 1rem;
-    /* سایهٔ نرم دو لایه: یک هالهٔ پهنِ ملایم + یک سایهٔ نزدیکِ ظریف */
-    box-shadow: 0 12px 30px rgb(15 23 42 / .08),
-        0 2px 6px rgb(15 23 42 / .05);
-}
-
-.sms-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 1.75rem;
-}
-
-.sms-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.125rem;
-}
-
-.sms-textarea {
-    min-height: 7rem;
-    resize: vertical;
-}
-
-/* ۵) شمارنده: مثل عکس سمت چپ (در RTL یعنی end) */
-.message-counter {
-    margin-top: .5rem;
-    direction: ltr;
-    text-align: left;
-    font-size: .875rem;
-    color: #374151;
-}
-
-.message-counter .separator {
-    margin-inline: .3rem;
-}
-
-.message-counter .count {
-    font-weight: 600;
-    color: #16a34a;
-}
-
-/* سبز مثل عکس */
-.message-counter.is-empty .count {
-    color: #6b7280;
-}
-
-.message-counter.is-full .count {
-    color: #dc2626;
-}
-
-/* ظرفیت پر */
-
-/* پیام‌های خطا / موفقیت */
-.error-message {
-    display: block;
-    margin-top: .375rem;
-    font-size: .8rem;
-    color: #dc2626;
-}
-
-.error-message:empty {
-    display: none;
-}
-
-.success-message {
-    text-align: center;
-    font-size: .875rem;
-    font-weight: 500;
-    color: #16a34a;
-}
-
-/* ۶) ردیف سوئیچ: باکس سفید، لیبل راست / سوئیچ چپ (مثل عکس) */
-
-.toggle-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fff;
-    border: 1px solid var(--color-default-medium, #d1d5db);
-    border-radius: .5rem;
-    padding: .8rem 1rem;
-}
-
-
-/* ===== سوئیچ زمان‌بندی با CSS خالی ===== */
-.switch {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-/* چک‌باکس مخفی (همان کار sr-only را می‌کند) */
-.switch-input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* بدنهٔ سوئیچ (رنگ خاکستری وقتی خاموش) */
-.switch-track {
-    width: 2.75rem;
-    height: 1.5rem;
-    background: #e5e7eb;
-    border-radius: 9999px;
-    position: relative;
-    flex-shrink: 0;
-    transition: background-color .2s ease;
-}
-
-/* دکمهٔ گرد داخل سوئیچ */
-.switch-track::after {
-    content: "";
-    position: absolute;
-    top: .125rem;
-    right: .125rem;
-    width: 1.25rem;
-    height: 1.25rem;
-    background: #ffffff;
-    border-radius: 9999px;
-    box-shadow: 0 1px 3px rgb(0 0 0 / .25);
-    transition: transform .2s ease;
-}
-
-/* وقتی چک‌باکس تیک خورده: بدنه آبی شود */
-.switch-input:checked + .switch-track {
-    background: #1c64f2;
-}
-
-/* وقتی چک‌باکس تیک خورده: دکمه به سمت چپ حرکت کند (در RTL) */
-.switch-input:checked + .switch-track::after {
-    transform: translateX(-1.25rem);
-}
-
-/* وقتی با کیبورد روی سوئیچ فوکوس شده: حلقهٔ آبی نرم */
-.switch-input:focus-visible + .switch-track {
-    box-shadow: 0 0 0 4px #e1effe;
-}
-
-
-
-.toggle-label {
-    font-size: .875rem;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-/* پنل تاریخ/ساعت */
-.schedule-detail {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: .75rem;
-    margin-top: .75rem;
-}
-
-/* آیکن‌های تاریخ/ساعت (SVG این‌لاین، بدون کتابخانه اضافه) */
-.input-icon-wrap {
-    position: relative;
-}
-
-.input-icon-wrap .field-icon {
-    position: absolute;
-    inset-inline-start: .85rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.15rem;
-    height: 1.15rem;
-    color: #6b7280;
-    pointer-events: none;
-}
-
-.input-icon-wrap input {
-    padding-inline-start: 2.6rem;
-}
-
-/* ===== تم Tagify (بخش ۳) دقیقاً مثل تگ‌های آبی عکس ===== */
-/* ===== تم Tagify (بخش ۳) دقیقاً مثل تگ‌های آبی عکس ===== */
+/* ===== Tagify (کتابخانه خارجی با CSS variables خودش) ===== */
 .tagify {
     direction: ltr;
-    /* ← خط جدید: تگ‌ها از سمت چپ چیده می‌شوند مثل موکاپ */
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -255,10 +16,9 @@ body {
     box-sizing: border-box;
     min-height: 2.75rem;
     padding: .25rem .4rem .25rem .75rem;
-    /* چپ شد .75rem به‌جای .4rem */
-    --tags-border-color: var(--color-default-medium, #d1d5db);
+    --tags-border-color: #d1d5db;
     --tags-hover-border-color: #9ca3af;
-    --tags-focus-border-color: var(--color-brand, #2563eb);
+    --tags-focus-border-color: #1c64f2;
     --tag-bg: #e3edff;
     --tag-hover: #cfdffc;
     --tag-text-color: #2563eb;
@@ -277,20 +37,20 @@ body {
     background: #fff;
     border-radius: .5rem;
     font-size: .875rem;
+    border: 1px solid #d1d5db;
 }
 
 .tagify.tagify--focus {
-    box-shadow: 0 0 0 1px var(--color-brand, #2563eb);
+    box-shadow: 0 0 0 1px #1c64f2;
+    border-color: #1c64f2;
 }
 
-/* ← خط جدید: داخل هر تگ راست‌چین بماند تا ضربدر سمت راستِ عدد باشد مثل موکاپ */
 .tagify__tag {
     margin: .15rem .3rem;
     font-size: .8rem;
     direction: ltr;
 }
 
-/* ← دو مقدار جدید: محل تایپ و placeholder فارسی سمت راست بماند مثل موکاپ */
 .tagify__input {
     min-width: 8rem;
     padding: .3rem .5rem;
@@ -299,33 +59,7 @@ body {
     text-align: right;
 }
 
-/* ===== ریسپانسیو فقط با CSS خالی =====
-   زیر 1024px (موبایل + تبلت) = همان حالت راست عکس (پیش‌فرض بالا)
-   بالای 1024px (دسکتاپ)     = همان حالت چپ عکس */
-
-/* ===== یکسان‌سازی حاشیهٔ همهٔ کادرها: خاکستری ملایم + گوشهٔ گرد ===== */
-#sender,
-#message,
-#date,
-#time,
-.tagify,
-.toggle-box {
-    border: 1px solid var(--color-default-medium, #d1d5db);
-    /* همان خاکستری کادر دوم */
-    border-radius: .5rem;
-    /* همان گوشهٔ گرد کادر دوم */
-}
-
-/* وقتی روی فیلد می‌روی، حاشیه آبی شود تا فوکوس دیده شود */
-#sender:focus,
-#message:focus,
-#date:focus,
-#time:focus {
-    border-color: var(--color-brand, #1c64f2);
-}
-
-/* آیکن تکراری خودِ مرورگر را حذف می‌کنیم تا فقط آیکن خودمان بماند */
-/* آیکن داخلی مرورگر را شفاف و گسترده می‌کنیم تا روی کل input کلیک‌پذیر باشد */
+/* ===== مخفی کردن آیکون پیش‌فرض date/time picker ===== */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
     opacity: 0;
@@ -336,104 +70,4 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     margin: 0;
     padding: 0;
     cursor: pointer;
-}
-
-/* آیکن SVG ما فقط نمایشی است؛ کلیک از روی آن رد می‌شود و به input می‌رسد */
-.icon-btn {
-    pointer-events: none;
-}
-
-/* دکمهٔ آیکن: سرِ جای آیکن قبلی، ولی قابل کلیک */
-.icon-btn {
-    position: absolute;
-    pointer-events: none;
-    inset-inline-start: .5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: none;
-    background: transparent;
-    border-radius: .375rem;
-    color: #6b7280;
-    cursor: pointer;
-    transition: background-color .15s ease, color .15s ease;
-}
-.icon-btn:hover {
-    background: #e8f0fe;
-    color: #1c64f2;
-}
-.icon-btn svg {
-    width: 1.25rem;
-    height: 1.25rem;
-}
-
-/* ===== دکمهٔ ارسال با CSS خالی (مثل موکاپ: آبی، تمام‌عرض، گوشهٔ گرد) ===== */
-.submit-btn {
-    display: block;
-    width: 100%;
-    background: #1e60e6;
-    color: #ffffff;
-    border: none;
-    border-radius: .5rem;
-    padding: .75rem 1rem;
-    font-size: .9rem;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    box-shadow: 0 1px 2px rgb(15 23 42 / .08);
-    transition: background-color .15s ease, transform .05s ease, box-shadow .15s ease;
-}
-
-/* هاور: آبی تیره‌تر */
-.submit-btn:hover {
-    background: #164bc4;
-}
-
-/* کلیک: یک پیکسل فرو می‌رود تا حس فشردن بدهد */
-.submit-btn:active {
-    transform: translateY(1px);
-}
-
-/* فوکوس با کیبورد (Tab): حلقهٔ آبی نرم، مثل بقیهٔ اجزا */
-.submit-btn:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px #e1effe;
-}
-
-
-
-@media (min-width: 1024px) {
-    .page-wrap {
-        max-width: 46rem;
-        padding: 3rem 1.5rem;
-    }
-
-    .sms-card {
-        border-radius: 1.25rem;
-        padding: 2.25rem 2.5rem;
-    }
-
-    .sms-title {
-        font-size: 1.5rem;
-        margin-bottom: 2.25rem;
-    }
-
-    .sms-form {
-        gap: 1.375rem;
-    }
-
-    .sms-textarea {
-        min-height: 8.75rem;
-    }
-}
-
-/* صفحه‌های خیلی باریک: تاریخ/ساعت زیر هم */
-@media (max-width: 420px) {
-    .schedule-detail {
-        grid-template-columns: 1fr;
-    }
 }

@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "build": "tailwindcss -i ./src/input.css -o ./css/tailwind.css --watch"
+  },
+  "dependencies": {
+    "@yaireo/tagify": "^4.38.0",
+    "flowbite": "^4.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "@tailwindcss/postcss": "^4.3.3",
+    "postcss": "^8.5.0",
+    "tailwindcss": "^4.3.3"
+  }
+}
