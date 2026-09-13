@@ -1,11 +1,57 @@
 /* =====================================================
-   فقط استایل‌هایی که با Tailwind/Flowbite قابل پیاده‌سازی نیستند
+   ریسپانسیو بودن صفحه — کاملاً با CSS دستی
+   (طبق خواسته کارفرما، بدون استفاده از sm:/lg: خود Tailwind)
+   استایل‌دهی عمومی (رنگ، بوردر، فونت و...) همچنان فقط
+   با کلاس‌های Tailwind/Flowbite/Tagify انجام می‌شود.
 ===================================================== */
-
-body {
-    font-family: "Vazirmatn", "Inter", "Segoe UI", Tahoma, system-ui, sans-serif;
+@media (min-width: 640px) {
+    .schedule-detail {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
+@media (min-width: 1024px) {
+    .page-wrap {
+        max-width: 46rem;
+        padding: 3rem 1.5rem;
+    }
+
+    .sms-card {
+        border-radius: 1.25rem;
+        padding: 2.25rem 2.5rem;
+    }
+
+    .sms-title {
+        font-size: 1.5rem;
+        margin-bottom: 2.25rem;
+    }
+
+    .sms-textarea {
+        min-height: 8.75rem;
+    }
+
+    .sms-form {
+        gap: 1.5rem;
+    }
+
+    .schedule-detail {
+        margin-top: 1.5rem;
+    }
+}
+
+/* زیر ۴۲۰px همیشه تک‌ستونه بماند */
+@media (max-width: 420px) {
+    .schedule-detail {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =====================================================
+   تم رنگی Tagify — حداقلی
+   چون Flowbite این کتابخانه رو استایل نمی‌کنه، فقط از طریق
+   متغیرهای رسمی خود Tagify (نه override دستی کلاس‌ها) با
+   پالت رنگی Tailwind (که در tailwind.css تعریف شده) هماهنگ شده.
+===================================================== */
 /* ===== Tagify (کتابخانه خارجی با CSS variables خودش) ===== */
 .tagify {
     direction: ltr;
@@ -23,9 +69,9 @@ body {
     --tag-hover: #cfdffc;
     --tag-text-color: #2563eb;
     --tag-text-color--edit: #1d4ed8;
-    --tag-invalid-color: #dc2626;
-    --tag-invalid-bg: #fee2e2;
-    --tag-remove-bg: #c9d9fb;
+    --tag-invalid-bg: #ffe1e19c;
+    --tag-invalid-color: #bd1717;
+    --tag-remove-bg: #ffe1e19c;
     --tag-remove-btn-color: #2563eb;
     --tag-remove-btn-bg: transparent;
     --tag-remove-btn-bg--hover: transparent;
@@ -35,7 +81,7 @@ body {
     --placeholder-color: #9ca3af;
     --placeholder-color-focus: #9ca3af;
     background: #fff;
-    border-radius: .5rem;
+    border-radius: 1rem;
     font-size: .875rem;
     border: 1px solid #d1d5db;
 }
@@ -49,6 +95,8 @@ body {
     margin: .15rem .3rem;
     font-size: .8rem;
     direction: ltr;
+    border-radius: 1rem;
+
 }
 
 .tagify__input {
@@ -59,15 +107,50 @@ body {
     text-align: right;
 }
 
-/* ===== مخفی کردن آیکون پیش‌فرض date/time picker ===== */
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="time"]::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
+/* تگ نامعتبر: متن هم قرمز بشه، نه فقط بک‌گراند */
+.tagify__tag.tagify--notAllowed:not(.tagify__tag--editable) div {
+    color: var(--tag-invalid-color);
 }
+/* هاور روی تگ سالم => حالت "آماده حذف" با قرمز، بدون خط/درز مزاحم */
+.tagify .tagify__tag:not(.tagify--notAllowed):hover div::before {
+    --tag-bg-inset: 0;
+    --tag-bg: var(--tag-invalid-bg);
+}
+
+.tagify .tagify__tag:not(.tagify--notAllowed):hover div,
+.tagify .tagify__tag:not(.tagify--notAllowed):hover div > span,
+.tagify .tagify__tag:not(.tagify--notAllowed):hover .tagify__tag__removeBtn {
+    color: var(--tag-invalid-color);
+    opacity: 1;
+}
+
+/* رنگ ضربدر تگ نامعتبر هم قرمز بشه */
+.tagify__tag.tagify--notAllowed:not(.tagify__tag--editable) .tagify__tag__removeBtn {
+    color: var(--tag-invalid-color);
+}
+
+.tagify__tag.tagify--notAllowed:not(.tagify__tag--editable) div>span{opacity:.5}
+
+/* ۱. رفع محو بودن متن تگ نامعتبر نسبت به ضربدر */
+.tagify__tag.tagify--notAllowed:not(.tagify__tag--editable) div > span {
+    opacity: 1;
+}
+
+
+/* سوییچ زمان‌بندی: دایره در حالت خاموش سمت راست، با روشن شدن به چپ می‌رود */
+/* #timing-toggle::after {
+    content: '';
+    position: absolute;
+    top: 0.125rem;
+    right: 0.125rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    background: #fff;
+    border-radius: 9999px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    transition: transform .15s ease-in-out;
+}
+
+#timing:checked ~ #timing-toggle::after {
+    transform: translateX(-100%);
+} */
