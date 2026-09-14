@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const toastMessage = document.querySelector('#toast-message');
     const toastClose = document.querySelector('.toast-close');
     const clearAllBtn = document.querySelector('#clear-all-tags');
+    const dateIconBtn = document.querySelector('#date-icon-btn');
+    const timeIconBtn = document.querySelector('#time-icon-btn');
+    let timeHasRealValue = false;      // آیا کاربر واقعاً یک ساعت انتخاب کرده؟
+    let timeInteractedThisOpen = false; 
 
     // ===== پیام‌های خطا =====
     const maxTagsMessage = 'حداکثر 10 شماره موبایل می توانید وارد کنید.';
@@ -29,24 +33,104 @@ document.addEventListener('DOMContentLoaded', function() {
     let errorTimer = null;
     let successTimer = null;
 
-    // ===== توابع کمکی =====
-    function getTodayString() {
+    // ===== Flatpickr - تقویم تاریخ =====
+    const datePicker = flatpickr(dateInput, {
+        locale: 'fa', // تقویم شمسی
+        dateFormat: 'Y-m-d',
+        minDate: 'today',
+        disableMobile: true,
+        clickOpens: true, // کلیک روی خود فیلد تقویم را باز نکند
+        onChange: function(selectedDates, dateStr) {
+            if (dateStr !== '') {
+                clearError(dateError);
+            }
+            updateTimeMin();
+            hideSuccess();
+        }
+    });
+
+    // ===== Flatpickr - انتخاب ساعت =====
+    const timePicker = flatpickr(timeInput, {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: 'H:i',
+    time_24hr: true,
+    minuteIncrement: 5,
+    disableMobile: true,
+    clickOpens: true,
+    onOpen: function (selectedDates, dateStr, instance) {
+        updateTimeMin();
+
+        // فقط ظاهر اسپینر رو به ساعت الان می‌بریم، بدون هیچ "انتخاب" یا نوشتن در فیلد
         const now = new Date();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        return now.getFullYear() + '-' + month + '-' + day;
+        instance.set('defaultHour', now.getHours());
+        instance.set('defaultMinute', now.getMinutes());
+    },
+    onChange: function (selectedDates, dateStr) {
+        if (dateStr !== '') {
+            clearError(timeError);
+        }
+        hideSuccess();
+    }
+    });
+
+    // ===== Event Listeners برای آیکون‌ها =====
+    dateIconBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        datePicker.open();
+    });
+
+    timeIconBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        timePicker.open();
+    });
+
+    // ===== تابع به‌روزرسانی حداقل ساعت =====
+    // ===== تابع به‌روزرسانی حداقل ساعت =====
+    function updateTimeMin() {
+    const selectedDate = datePicker.selectedDates[0];
+
+    if (!selectedDate) {
+        timePicker.set('minTime', null);
+        return;
     }
 
-    function getCurrentTimeString() {
-        if (dateInput.value === getTodayString()) {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            timeInput.min = hours + ':' + minutes;
-        } else {
-            timeInput.min = '';
+    const today = new Date();
+
+    const isSameDay =
+        selectedDate.getFullYear() === today.getFullYear() &&
+        selectedDate.getMonth() === today.getMonth() &&
+        selectedDate.getDate() === today.getDate();
+
+    if (isSameDay) {
+        const hours = String(today.getHours()).padStart(2, '0');
+        const minutes = String(today.getMinutes()).padStart(2, '0');
+        const currentTime = hours + ':' + minutes;
+
+        timePicker.set('minTime', currentTime);
+
+        if (timePicker.selectedDates.length > 0) {
+            const selectedTime = timePicker.selectedDates[0];
+            const selectedHours = String(selectedTime.getHours()).padStart(2, '0');
+            const selectedMinutes = String(selectedTime.getMinutes()).padStart(2, '0');
+            const selectedTimeStr = selectedHours + ':' + selectedMinutes;
+
+            if (selectedTimeStr < currentTime) {
+                timePicker.clear();
+            }
         }
+    } else {
+        timePicker.set('minTime', null);
+        }  
     }
+
+    // ===== توابع کمکی =====
+    // function getTodayString() {
+    //     const now = new Date();
+    //     const month = String(now.getMonth() + 1).padStart(2, '0');
+    //     const day = String(now.getDate()).padStart(2, '0');
+    //     return now.getFullYear() + '-' + month + '-' + day;
+    // }
 
     function updateClearAllVisibility() {
         if (tagify.value.length > 0) {
@@ -169,30 +253,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ===== زمان‌بندی =====
-    dateInput.addEventListener('input', function () {
-        getCurrentTimeString();
-        if (dateInput.value !== '') {
-            clearError(dateError);
-        }
-        hideSuccess();
-    });
-
-    timeInput.addEventListener('input', function () {
-        if (timeInput.value !== '') {
-            clearError(timeError);
-        }
-        hideSuccess();
-    });
-
     timingCheckbox.addEventListener('change', function () {
         if (timingCheckbox.checked) {
             timingDetail.classList.remove('hidden');
-            dateInput.min = getTodayString();
-            getCurrentTimeString();
+            datePicker.set('minDate', 'today');
+            updateTimeMin();
         } else {
             timingDetail.classList.add('hidden');
-            dateInput.value = '';
-            timeInput.value = '';
+            datePicker.clear();
+            timePicker.clear();
+            timeHasRealValue = false;
             clearError(dateError);
             clearError(timeError);
         }
@@ -254,3 +324,4 @@ document.addEventListener('DOMContentLoaded', function() {
     updateClearAllVisibility();
 
 }); // پایان DOMContentLoaded
+

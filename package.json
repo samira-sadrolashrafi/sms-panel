@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "@yaireo/tagify": "^4.38.0",
+    "flatpickr": "^4.6.13",
     "flowbite": "^4.0.2"
   },
   "devDependencies": {
