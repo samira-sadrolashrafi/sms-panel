@@ -1,7 +1,5 @@
-// صبر کن تا DOM کامل لود بشه
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ===== متغیرها و المان‌ها =====
     const inputElem = document.querySelector('#receiver');
     const receiverError = document.querySelector('#receiver-error');
     const messageInput = document.querySelector('#message');
@@ -25,17 +23,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const timingRow = document.querySelector('#timing-row');
     let timeInteractedThisOpen = false;
 
-    // ===== پیام‌های خطا =====
     const maxTagsMessage = 'حداکثر 10 شماره موبایل می توانید وارد کنید.';
     const invalidPhoneNumber = 'شماره موبایل باید با 09 شروع شود و 11 رقم باشد.';
     const duplicatePhoneNumber = 'شماره موبایل تکراری است.';
 
-    // ===== تایمرهای خطا =====
     let receiverErrorTimer = null;
     let timeErrorTimer = null;
     let successTimer = null;
 
-    // ===== توابع کمکی خطا =====
     function showError(element, message) {
         element.textContent = message;
         element.classList.remove('hidden');
@@ -46,11 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
         element.classList.add('hidden');
     }
 
-    /**
-     * نمایش خطای ساعت برای ۳ ثانیه.
-     * تا وقتی timeErrorTimer پر است، خطا «قفل» محسوب می‌شود و
-     * هیچ رویداد جانبی (مثل onChange خود flatpickr) اجازه‌ی پاک کردنش را ندارد.
-     */
+
     function showTimeError(message) {
         clearTimeout(timeErrorTimer);
         showError(timeError, message);
@@ -95,8 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ===== تقویم شمسی (JalaliDatePicker) =====
-    // مقدار نمایشی: شمسی | مقدار ارسالی: میلادی در #date-gregorian
+
     const datePicker = new JalaliDatePicker(dateInput, {
         trigger: dateIconBtn,
         hiddenInput: dateGregorianInput,
@@ -110,27 +100,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ===== ارقام فارسی =====
     const enDigits = JalaliDatePicker.toEnDigits;
 
-    // مقدار لاتین ساعت را برای ارسال به سرور همگام نگه می‌دارد
     function syncTimeLatin() {
         if (timeLatinInput) timeLatinInput.value = enDigits(timeInput.value);
     }
 
-    /**
-     * فیلدهای ساعت/دقیقه‌ی flatpickr را فارسی‌نویس می‌کند.
-     * getter مقدار را لاتین برمی‌گرداند (تا منطق داخلی flatpickr سالم بماند)
-     * و setter مقدار را فارسی می‌نویسد (چیزی که کاربر می‌بیند).
-     */
     function configureTimeSpinnerInput(input) {
         input.type = 'text';
         input.setAttribute('inputmode', 'numeric');
     }
 
-
-
-    // ===== Flatpickr - انتخاب ساعت =====
     const timePicker = flatpickr(timeInput, {
         enableTime: true,
         noCalendar: true,
@@ -139,14 +119,13 @@ document.addEventListener('DOMContentLoaded', function () {
         minuteIncrement: 1,
         disableMobile: true,
         clickOpens: true,
-        // خروجی فیلد ساعت با ارقام فارسی نوشته می‌شود
         parseDate: function (dateStr, format) {
             return flatpickr.parseDate(enDigits(dateStr), format);
         },
 
         onOpen: function (selectedDates, dateStr, instance) {
             updateTimeMin();
-            timeInteractedThisOpen = false; // ریست فلگ تعامل برای این بار باز شدن
+            timeInteractedThisOpen = false; 
 
             const selectedDate = datePicker.selectedDate;
             const today = new Date();
@@ -156,7 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 selectedDate.getDate() === today.getDate();
 
             if (isToday) {
-                // فقط برای «امروز»: ظاهر اسپینر رو به ساعت الان می‌بریم
                 instance.hourElement.value = String(today.getHours()).padStart(2, '0');
                 instance.minuteElement.value = String(today.getMinutes()).padStart(2, '0');
             } else {
@@ -164,7 +142,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         },
         onClose: function (selectedDates, dateStr, instance) {
-            // اگر کاربر واقعاً چیزی تغییر نداده بود، همه چیز رو پاک کن
             if (!timeInteractedThisOpen) {
                 instance.clear();
                 resetTimeSpinners(instance);
@@ -172,9 +149,6 @@ document.addEventListener('DOMContentLoaded', function () {
             syncTimeLatin();
         },
         onChange: function (selectedDates, dateStr) {
-            // خطای ساعت فقط وقتی پاک می‌شود که در حال حاضر «قفل» نباشد.
-            // (flatpickr هنگام بسته شدن، روی blur یک‌بار مقدار را commit و onChange را شلیک می‌کند
-            //  و بدون این شرط، خطای تازه‌نمایش‌داده‌شده بلافاصله پاک می‌شد.)
             if (dateStr !== '' && !isTimeErrorLocked()) {
                 clearError(timeError);
             }
@@ -183,7 +157,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // فارسی‌سازی ارقام اسپینر ساعت و دقیقه
     configureTimeSpinnerInput(timePicker.hourElement);
     configureTimeSpinnerInput(timePicker.minuteElement);
 
@@ -192,41 +165,34 @@ document.addEventListener('DOMContentLoaded', function () {
         instance.minuteElement.value = String(instance.config.defaultMinute).padStart(2, '0');
     }
 
-    // ===== کنترل ورودی ساعت و دقیقه (حداکثر ۲ رقم + محدوده مجاز) =====
     function limitTimeInput(input, maxValue, instance) {
 
         input.setAttribute('min', '0');
         input.setAttribute('max', String(maxValue));
         input.setAttribute('step', '1');
 
-        // جلوگیری از کاراکترهای غیرمجاز
         input.addEventListener('keydown', function (e) {
             if (['e', 'E', '+', '-', '.'].includes(e.key)) {
                 e.preventDefault();
             }
         });
 
-        // کنترل مقدار هنگام تایپ یا Paste
         input.addEventListener('input', function () {
 
             timeInteractedThisOpen = true;
 
-            // فقط عدد
             let value = input.value.replace(/\D/g, '');
 
-            // حداکثر دو رقم
             if (value.length > 2) {
                 value = value.slice(0, 2);
             }
 
-            // اگر مقدار از حد مجاز بیشتر بود
             if (value !== '' && Number(value) > maxValue) {
                 showTimeError('زمان وارد شده صحیح نیست.');
 
                 input.value = '';
-                instance.close(); // پنجره رو ببند تا پیام خطا دیده بشه
+                instance.close(); 
 
-                // بعد از بسته شدن، هر مقداری که flatpickr روی blur commit کرده را دور می‌ریزیم
                 setTimeout(function () {
                     instance.clear();
                     resetTimeSpinners(instance);
@@ -246,19 +212,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ساعت فقط از 00 تا 23
     limitTimeInput(timePicker.hourElement, 23, timePicker);
 
-    // دقیقه فقط از 00 تا 59
     limitTimeInput(timePicker.minuteElement, 59, timePicker);
 
-    // ===== باز کردن انتخاب ساعت با آیکون =====
     timeIconBtn.addEventListener('click', function (e) {
         e.preventDefault();
         timePicker.open();
     });
 
-    // ===== تابع به‌روزرسانی حداقل ساعت =====
     function updateTimeMin() {
         const selectedDate = datePicker.selectedDate;
 
@@ -296,7 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ===== Tagify =====
     function updateClearAllVisibility() {
         if (tagify.value.length > 0) {
             clearAllBtn.classList.remove('hidden');
@@ -346,12 +307,9 @@ document.addEventListener('DOMContentLoaded', function () {
         updateClearAllVisibility();
     });
 
-    // ===== Event Listeners =====
 
-    // بستن Toast
     toastClose.addEventListener('click', hideSuccess);
 
-    // حذف همه تگ‌ها
     clearAllBtn.addEventListener('click', function () {
         tagify.removeAllTags();
         clearError(receiverError);
@@ -360,12 +318,10 @@ document.addEventListener('DOMContentLoaded', function () {
         tagify.DOM.input.focus();
     });
 
-    // ===== شمارنده پیام =====
     messageInput.addEventListener('input', function (e) {
         var currentLength = e.target.value.length;
         messageCount.textContent = currentLength;
 
-        // تغییر رنگ شمارنده
         messageCount.classList.remove('text-green-600', 'text-red-600', 'text-gray-500');
 
         if (currentLength === 0) {
@@ -383,14 +339,13 @@ document.addEventListener('DOMContentLoaded', function () {
         hideSuccess();
     });
 
-    // ===== زمان‌بندی =====
     timingCheckbox.addEventListener('change', function () {
         if (timingCheckbox.checked) {
             timingDetail.classList.remove('hidden');
             updateTimeMin();
         } else {
             timingDetail.classList.add('hidden');
-            datePicker.clear(true); // بدون شلیک onChange
+            datePicker.clear(true); 
             datePicker.close();
             timePicker.clear();
             resetTimeError();
@@ -399,31 +354,26 @@ document.addEventListener('DOMContentLoaded', function () {
         hideSuccess();
     });
 
-    // کلیک روی کل ردیف «زمان‌بندی ارسال»، سوییچ را toggle کند
     timingRow.addEventListener('click', function (e) {
-        // اگر کلیک دقیقاً روی خودِ لیبل متن یا لیبل سوییچ بود،
-        // بگذار خودشان طبق رفتار native مدیریتش کنند (وگرنه دوبار toggle می‌شود)
         if (e.target.closest('label')) return;
 
         timingCheckbox.click();
     });
 
-    // ===== ارسال فرم =====
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         hideSuccess();
 
         var receiver = tagify.value.map(tag => tag.value);
         var message = messageInput.value;
-        var date = dateInput.value;                    // شمسی (نمایشی)
-        var dateGregorian = dateGregorianInput.value;  // میلادی (برای سرور)
-        var time = timeInput.value;                    // فارسی (نمایشی)
+        var date = dateInput.value;                    
+        var dateGregorian = dateGregorianInput.value;  
+        var time = timeInput.value;                    
         syncTimeLatin();
-        var timeLatin = timeLatinInput ? timeLatinInput.value : enDigits(time); // برای سرور
+        var timeLatin = timeLatinInput ? timeLatinInput.value : enDigits(time); 
 
         let hasError = false;
 
-        // اعتبارسنجی گیرنده
         if (receiver.length === 0) {
             showError(receiverError, 'لطفاً حداقل یک شماره وارد کنید.');
             hasError = true;
@@ -431,7 +381,6 @@ document.addEventListener('DOMContentLoaded', function () {
             clearError(receiverError);
         }
 
-        // اعتبارسنجی پیام
         if (message.trim() === '') {
             showError(messageError, 'لطفاً متن پیام را وارد کنید.');
             hasError = true;
@@ -439,7 +388,6 @@ document.addEventListener('DOMContentLoaded', function () {
             clearError(messageError);
         }
 
-        // اعتبارسنجی زمان‌بندی
         if (timingCheckbox.checked) {
             if (date === '') {
                 showError(dateError, 'لطفاً تاریخ زمان بندی را وارد کنید.');
@@ -449,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (time === '') {
-                resetTimeError(); // لغو تایمر ۳ ثانیه‌ای تا این خطا ماندگار بماند
+                resetTimeError(); 
                 showError(timeError, 'لطفاً ساعت زمان بندی را وارد کنید.');
                 hasError = true;
             } else {
@@ -463,7 +411,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('داده‌های ارسالی:', { receiver, message, date, dateGregorian, time, timeLatin });
     });
 
-    // ===== مقداردهی اولیه =====
     updateClearAllVisibility();
 
-}); // پایان DOMContentLoaded
+}); 

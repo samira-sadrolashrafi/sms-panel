@@ -6,20 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ارسال پیامک</title>
 
-    <!-- Flatpickr: فقط برای انتخاب ساعت استفاده می‌شود -->
     <link rel="stylesheet" href="node_modules/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="node_modules/flatpickr/dist/themes/material_blue.css">
-    <!-- Tagify (استایل پیش‌فرض کتابخانه) -->
     <link rel="stylesheet" href="node_modules/@yaireo/tagify/dist/tagify.css">
-    <!-- Tailwind + Flowbite (خروجی بیلد) -->
     <link rel="stylesheet" href="css/tailwind.css">
-    <!-- CSS دستی: ریسپانسیو + تم Tagify + ساختار تقویم شمسی -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="bg-gray-100 min-h-screen font-[Vazirmatn]">
 
-    <!-- Toast -->
     <div id="toast-success"
         class="fixed top-5 left-1/2 -translate-x-1/2 flex items-center gap-3 w-[min(92vw,26rem)] bg-white border border-gray-200 border-r-4 border-r-green-600 rounded-lg px-4 py-3.5 shadow-lg transition-all duration-300 z-50 opacity-0 -translate-y-4 pointer-events-none"
         role="status" aria-live="polite">
@@ -43,15 +38,13 @@
         </button>
     </div>
 
-    <!-- Main Content -->
     <main class="page-wrap w-full max-w-[46rem] mx-auto px-4 py-6">
         <section class="sms-card bg-white border border-gray-200 rounded-xl p-5 shadow-lg">
             <h1 class="sms-title text-xl font-bold text-center text-gray-900 mb-5">ارسال پیامک</h1>
 
             <form id="sms-form" class="sms-form flex flex-col gap-5" novalidate>
 
-                <!-- فرستنده -->
-                <div>
+                <div class="min-w-0">
                     <label for="sender" class="block mb-2.5 text-sm font-medium text-gray-900">فرستنده</label>
                     <select id="sender"
                         class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
@@ -62,7 +55,6 @@
                     <p id="sender-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
                 </div>
 
-                <!-- شماره گیرنده (Tagify) -->
                 <div>
                     <div class="flex items-center justify-between mb-2.5">
                         <label for="receiver" class="text-sm font-medium text-gray-900">شماره گیرنده</label>
@@ -74,7 +66,6 @@
                     <p id="receiver-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
                 </div>
 
-                <!-- متن پیام -->
                 <div>
                     <label for="message" class="block mb-2.5 text-sm font-medium text-gray-900">متن پیام</label>
                     <textarea id="message" rows="4" maxlength="160" placeholder="متن پیام خود را وارد کنید..."
@@ -85,7 +76,6 @@
                     </p>
                 </div>
 
-                <!-- زمان‌بندی ارسال -->
                 <div>
                     <div id="timing-row" class="flex items-center justify-between bg-white border border-gray-300 rounded-lg px-4 py-3 cursor-pointer">
                         <label for="timing" class="text-sm font-medium text-gray-900 cursor-pointer">زمان‌بندی
@@ -98,14 +88,12 @@
                     </div>
 
                     <div id="timing-detail" class="schedule-detail grid gap-3 mt-5 hidden">
-                        <!-- فیلد تاریخ (شمسی) -->
                         <div>
                             <label class="block mb-2.5 text-sm font-medium text-gray-900">تاریخ</label>
                             <div class="relative">
                                 <input type="text" id="date" readonly autocomplete="off"
                                     class="block w-full pe-10 ps-3 py-2.5 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg cursor-pointer placeholder:text-gray-400"
                                     placeholder="انتخاب تاریخ">
-                                <!-- مقدار میلادی برای ارسال به سرور -->
                                 <input type="hidden" id="date-gregorian" name="date_gregorian">
                                 <button type="button" id="date-icon-btn"
                                     class="absolute inset-y-0 end-3 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors cursor-pointer rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
@@ -120,14 +108,12 @@
                             <p id="date-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
                         </div>
 
-                        <!-- فیلد ساعت -->
                         <div>
                             <label  class="block mb-2.5 text-sm font-medium text-gray-900">ساعت</label>
                             <div class="relative">
                                 <input type="text" id="time" readonly autocomplete="off"
                                     class="block w-full pe-10 ps-3 py-2.5 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg cursor-pointer placeholder:text-gray-400"
                                     placeholder="انتخاب ساعت">
-                                <!-- مقدار لاتین ساعت برای ارسال به سرور -->
                                 <input type="hidden" id="time-latin" name="time_latin">
                                 <button type="button" id="time-icon-btn"
                                     class="absolute inset-y-0 end-3 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors cursor-pointer rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
@@ -144,7 +130,6 @@
                     </div>
                 </div>
 
-                <!-- دکمه ارسال -->
                 <button id="submit-btn" type="submit"
                     class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold rounded-lg text-sm px-5 py-3 shadow-sm transition-colors">ارسال</button>
             </form>

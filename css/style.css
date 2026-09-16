@@ -1,9 +1,4 @@
-/* =====================================================
-   ریسپانسیو بودن صفحه — کاملاً با CSS دستی
-   (طبق خواسته کارفرما، بدون استفاده از sm:/lg: خود Tailwind)
-   استایل‌دهی عمومی (رنگ، بوردر، فونت و...) همچنان فقط
-   با کلاس‌های Tailwind/Flowbite/Tagify انجام می‌شود.
-===================================================== */
+
 @media (min-width: 640px) {
     .schedule-detail {
         grid-template-columns: 1fr 1fr;
@@ -38,19 +33,13 @@
     }
 }
 
-/* زیر ۴۲۰px همیشه تک‌ستونه بماند */
 @media (max-width: 420px) {
     .schedule-detail {
         grid-template-columns: 1fr;
     }
 }
 
-/* =====================================================
-   تم رنگی Tagify — حداقلی
-   چون Flowbite این کتابخانه رو استایل نمی‌کنه، فقط از طریق
-   متغیرهای رسمی خود Tagify (نه override دستی کلاس‌ها) با
-   پالت رنگی Tailwind (که در tailwind.css تعریف شده) هماهنگ شده.
-===================================================== */
+
 .tagify {
     direction: ltr;
     display: flex;
@@ -103,12 +92,10 @@
     text-align: right;
 }
 
-/* تگ نامعتبر: متن هم قرمز بشه، نه فقط بک‌گراند */
 .tagify__tag.tagify--notAllowed:not(.tagify__tag--editable) div {
     color: var(--tag-invalid-color);
 }
 
-/* هاور روی تگ سالم => حالت "آماده حذف" با قرمز، بدون خط/درز مزاحم */
 .tagify .tagify__tag:not(.tagify--notAllowed):hover div::before,
 .tagify .tagify__tag:not(.tagify--notAllowed).tagify__tag--hide div::before {
     --tag-bg-inset: 0;
@@ -126,19 +113,18 @@
     opacity: 1;
 }
 
-/* رنگ ضربدر تگ نامعتبر هم قرمز بشه */
 .tagify__tag.tagify--notAllowed:not(.tagify__tag--editable) .tagify__tag__removeBtn {
     color: var(--tag-invalid-color);
 }
 
-/* رفع محو بودن متن تگ نامعتبر نسبت به ضربدر */
 .tagify__tag.tagify--notAllowed:not(.tagify__tag--editable) div > span {
     opacity: 1;
 }
 
-/* رفع تداخل outline پیش‌فرض مرورگر (به‌ویژه فایرفاکس) با کادر آبی Tagify */
 .tagify:focus,
 .tagify__input:focus,
 .tagify__input:focus-visible {
     outline: none;
 }
+
+

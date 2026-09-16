@@ -1,15 +1,11 @@
-/* =====================================================
-   JalaliDatePicker — تقویم شمسی سبک، بدون وابستگی خارجی
-   - منطق تبدیل: الگوریتم رسمی jalaali-js
-   - ظاهر و چیدمان: فقط کلاس‌های Tailwind / Flowbite (بدون CSS دستی)
-   - پنجره بالای فیلد باز می‌شود (bottom-full)
-   مقدار نمایشی در input = تاریخ شمسی (با ارقام لاتین)
-   مقدار ارسالی به سرور = تاریخ میلادی در input مخفی
-===================================================== */
+/**
+ * تبدیل جلالی-میلادی بر اساس الگوریتم ۳۳ ساله
+ * منبع: jalaali-js (https://github.com/jalaali/jalaali-js)
+ * اعتبار: سال‌های ۱۲۰۰ تا ۱۷۰۰ شمسی
+ */
 (function (global) {
     'use strict';
 
-    /* ---------------- تبدیل تاریخ (jalaali-js) ---------------- */
     var breaks = [-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210,
         1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178];
 
@@ -110,24 +106,15 @@
         return isLeapJalaaliYear(jy) ? 30 : 29;
     }
 
-    /* ---------------- کمکی‌ها ---------------- */
     var MONTHS = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
         'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
     var WEEKDAYS = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
-    var FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 
     var MIN_YEAR = 1200;
     var MAX_YEAR = 1700;
 
-    // ارقام لاتین → فارسی
-    // توجه: این تابع دیگر در رندر تقویم استفاده نمی‌شود (طبق خواسته پروژه همه‌ی
-    // اعداد باید لاتین باشند) اما به عنوان یک ابزار عمومی روی JalaliDatePicker
-    // در دسترس می‌ماند تا در صورت نیاز بیرون از این فایل قابل استفاده باشد.
-    function faNum(value) {
-        return String(value).replace(/\d/g, function (d) { return FA_DIGITS[+d]; });
-    }
+    
 
-    // ارقام فارسی/عربی → لاتین
     function toEnDigits(value) {
         return String(value)
             .replace(/[\u06F0-\u06F9]/g, function (d) { return String(d.charCodeAt(0) - 1776); })
@@ -158,8 +145,7 @@
         return date.getFullYear() + '-' + pad2(date.getMonth() + 1) + '-' + pad2(date.getDate());
     }
 
-    /* ---------------- کلاس‌های ظاهری (Tailwind / Flowbite) ---------------- */
-    // پنجره بالای فیلد باز می‌شود: bottom-full + mb-2
+    
     var PANEL = 'jdp hidden absolute bottom-full start-0 mb-2 z-40 w-72 bg-white border border-gray-200 rounded-lg shadow-lg p-4';
     var HEADER = 'flex items-center justify-between gap-1 mb-2';
     var FOOTER = 'flex items-center justify-between gap-2 mt-3 pt-3 border-t border-gray-200';
@@ -180,7 +166,6 @@
     var ICON_PREV = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m9 5 7 7-7 7"/></svg>';
     var ICON_NEXT = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m15 19-7-7 7-7"/></svg>';
 
-    /* ---------------- خود تقویم ---------------- */
     function JalaliDatePicker(input, options) {
         options = options || {};
 
@@ -208,7 +193,6 @@
     JalaliDatePicker.prototype._build = function () {
         var wrapper = this.input.parentElement;
 
-        // والد باید relative باشد (در HTML کلاس relative دارد؛ این فقط محض اطمینان است)
         if (window.getComputedStyle(wrapper).position === 'static') {
             wrapper.classList.add('relative');
         }
@@ -393,7 +377,6 @@
         this.gridEl.innerHTML = html;
     };
 
-    /* ---------------- ناوبری و API ---------------- */
     JalaliDatePicker.prototype._navigate = function (dir) {
         if (this.view === 'days') {
             this.viewMonth += dir;
@@ -467,7 +450,6 @@
     JalaliDatePicker.toGregorian = toGregorian;
     JalaliDatePicker.formatJalali = formatJalali;
     JalaliDatePicker.formatGregorian = formatGregorian;
-    JalaliDatePicker.toFaDigits = faNum;
     JalaliDatePicker.toEnDigits = toEnDigits;
 
     global.JalaliDatePicker = JalaliDatePicker;
