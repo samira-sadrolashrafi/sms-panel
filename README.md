@@ -6,8 +6,6 @@ A responsive Persian RTL SMS sending panel built with **HTML, Tailwind CSS 4, Fl
 
 **[View Live Demo](https://samira-sadrolashrafi.github.io/sms-panel/)**
 
-> The demo is hosted with GitHub Pages and runs entirely on the client side.
-
 ## Overview
 
 SMS Panel is a front-end interface designed for Persian-language SMS sending workflows. Users can select a sender, add multiple recipient numbers, write an SMS message, and optionally schedule the message for a future date and time.
