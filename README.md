@@ -2,6 +2,12 @@
 
 A responsive Persian RTL SMS sending panel built with **HTML, Tailwind CSS 4, Flowbite, and Vanilla JavaScript**. The interface supports multiple recipients, client-side validation, a custom Jalali (Shamsi) calendar, and optional time scheduling.
 
+## 🚀 Live Demo
+
+**[View Live Demo](https://samira-sadrolashrafi.github.io/sms-panel/)**
+
+> The demo is hosted with GitHub Pages and runs entirely on the client side.
+
 ## Overview
 
 SMS Panel is a front-end interface designed for Persian-language SMS sending workflows. Users can select a sender, add multiple recipient numbers, write an SMS message, and optionally schedule the message for a future date and time.
@@ -55,14 +61,16 @@ The custom `JalaliDatePicker` class encapsulates calendar navigation, date selec
 - **Tagify** — recipient tag input
 - **Flatpickr** — time picker
 - **Vazirmatn** — Persian font
+- **GitHub Pages** — live demo hosting
 
 ## Project Structure
 
 ```text
 sms-panel/
+├── .github/
+│   └── workflows/
+│       └── pages.yml
 ├── .gitignore
-├── .vscode/
-│   └── settings.json
 ├── css/
 │   ├── style.css
 │   └── tailwind.css
@@ -107,7 +115,7 @@ The current `build` script runs the Tailwind CLI in watch mode and rebuilds `css
 
 After installing dependencies, open `index.html` in a browser or use a local development server such as VS Code Live Server.
 
-> **Note:** `node_modules/` is intentionally excluded from Git. Because the HTML file loads the libraries from `node_modules/`, running `npm install` is required before opening the project.
+> **Note:** `node_modules/` is intentionally excluded from Git. The project uses CDN-hosted runtime libraries in the deployed demo, while local development still supports installing the dependencies with `npm install`.
 
 ## Sending Flow
 
@@ -132,6 +140,10 @@ The current version logs the submission payload to the browser console instead o
 - When scheduling is enabled, both date and time are required.
 - Past dates cannot be selected.
 - When today's date is selected, a past time cannot be scheduled.
+
+## Deployment
+
+The project is deployed automatically to **GitHub Pages** whenever changes are pushed to the `main` branch. The deployment workflow is defined in `.github/workflows/pages.yml`.
 
 ## Notes
 
