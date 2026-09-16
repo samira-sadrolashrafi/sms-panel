@@ -275,7 +275,6 @@
         });
     };
 
-    /* ---------------- رندر ---------------- */
     JalaliDatePicker.prototype._render = function () {
         if (this.view === 'days') this._renderDays();
         else if (this.view === 'months') this._renderMonths();
@@ -293,7 +292,7 @@
         this.gridEl.className = GRID_DAYS;
 
         var first = jalaliToDate(this.viewYear, this.viewMonth, 1);
-        var offset = (first.getDay() + 1) % 7; // شنبه = ستون اول
+        var offset = (first.getDay() + 1) % 7; 
         var length = jalaaliMonthLength(this.viewYear, this.viewMonth);
         var html = '';
         var i, day, date, disabled, cls;
@@ -445,7 +444,6 @@
         else this.open();
     };
 
-    /* ابزارهای تبدیل برای استفاده بیرونی */
     JalaliDatePicker.toJalaali = toJalaali;
     JalaliDatePicker.toGregorian = toGregorian;
     JalaliDatePicker.formatJalali = formatJalali;
