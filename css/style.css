@@ -109,14 +109,19 @@
 }
 
 /* هاور روی تگ سالم => حالت "آماده حذف" با قرمز، بدون خط/درز مزاحم */
-.tagify .tagify__tag:not(.tagify--notAllowed):hover div::before {
+.tagify .tagify__tag:not(.tagify--notAllowed):hover div::before,
+.tagify .tagify__tag:not(.tagify--notAllowed).tagify__tag--hide div::before {
     --tag-bg-inset: 0;
     --tag-bg: var(--tag-invalid-bg);
 }
 
+
 .tagify .tagify__tag:not(.tagify--notAllowed):hover div,
 .tagify .tagify__tag:not(.tagify--notAllowed):hover div > span,
-.tagify .tagify__tag:not(.tagify--notAllowed):hover .tagify__tag__removeBtn {
+.tagify .tagify__tag:not(.tagify--notAllowed):hover .tagify__tag__removeBtn,
+.tagify .tagify__tag:not(.tagify--notAllowed).tagify__tag--hide div,
+.tagify .tagify__tag:not(.tagify--notAllowed).tagify__tag--hide div > span,
+.tagify .tagify__tag:not(.tagify--notAllowed).tagify__tag--hide .tagify__tag__removeBtn {
     color: var(--tag-invalid-color);
     opacity: 1;
 }

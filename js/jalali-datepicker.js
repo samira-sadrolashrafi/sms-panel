@@ -3,7 +3,7 @@
    - منطق تبدیل: الگوریتم رسمی jalaali-js
    - ظاهر و چیدمان: فقط کلاس‌های Tailwind / Flowbite (بدون CSS دستی)
    - پنجره بالای فیلد باز می‌شود (bottom-full)
-   مقدار نمایشی در input = تاریخ شمسی
+   مقدار نمایشی در input = تاریخ شمسی (با ارقام لاتین)
    مقدار ارسالی به سرور = تاریخ میلادی در input مخفی
 ===================================================== */
 (function (global) {
@@ -120,6 +120,9 @@
     var MAX_YEAR = 1700;
 
     // ارقام لاتین → فارسی
+    // توجه: این تابع دیگر در رندر تقویم استفاده نمی‌شود (طبق خواسته پروژه همه‌ی
+    // اعداد باید لاتین باشند) اما به عنوان یک ابزار عمومی روی JalaliDatePicker
+    // در دسترس می‌ماند تا در صورت نیاز بیرون از این فایل قابل استفاده باشد.
     function faNum(value) {
         return String(value).replace(/\d/g, function (d) { return FA_DIGITS[+d]; });
     }
@@ -149,7 +152,7 @@
     }
     function formatJalali(date) {
         var j = dateToJalali(date);
-        return faNum(j.jy + '/' + pad2(j.jm) + '/' + pad2(j.jd));
+        return j.jy + '/' + pad2(j.jm) + '/' + pad2(j.jd);
     }
     function formatGregorian(date) {
         return date.getFullYear() + '-' + pad2(date.getMonth() + 1) + '-' + pad2(date.getDate());
@@ -298,7 +301,7 @@
     JalaliDatePicker.prototype._renderDays = function () {
         var today = startOfDay(new Date());
 
-        this.titleEl.textContent = MONTHS[this.viewMonth - 1] + ' ' + faNum(this.viewYear);
+        this.titleEl.textContent = MONTHS[this.viewMonth - 1] + ' ' + this.viewYear;
         this.weekdaysEl.innerHTML = WEEKDAYS.map(function (d) {
             return '<span class="' + CELL_WEEKDAY + '">' + d + '</span>';
         }).join('');
@@ -329,14 +332,14 @@
 
             html += '<button type="button" data-day="' + day + '"'
                 + (disabled ? ' disabled' : '')
-                + ' class="' + cls + '">' + faNum(day) + '</button>';
+                + ' class="' + cls + '">' + day + '</button>';
         }
 
         this.gridEl.innerHTML = html;
     };
 
     JalaliDatePicker.prototype._renderMonths = function () {
-        this.titleEl.textContent = faNum(this.viewYear);
+        this.titleEl.textContent = String(this.viewYear);
         this.weekdaysEl.innerHTML = '';
         this.gridEl.className = GRID_MONTHS;
 
@@ -363,7 +366,7 @@
     JalaliDatePicker.prototype._renderYears = function () {
         var start = this.viewYear - mod(this.viewYear, 12);
 
-        this.titleEl.textContent = faNum(start) + ' – ' + faNum(start + 11);
+        this.titleEl.textContent = start + ' – ' + (start + 11);
         this.weekdaysEl.innerHTML = '';
         this.gridEl.className = GRID_MONTHS;
 
@@ -384,7 +387,7 @@
 
             html += '<button type="button" data-year="' + year + '"'
                 + (disabled ? ' disabled' : '')
-                + ' class="' + cls + '">' + faNum(year) + '</button>';
+                + ' class="' + cls + '">' + year + '</button>';
         }
 
         this.gridEl.innerHTML = html;

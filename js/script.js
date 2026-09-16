@@ -111,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ===== ارقام فارسی =====
-    const faDigits = JalaliDatePicker.toFaDigits;
     const enDigits = JalaliDatePicker.toEnDigits;
 
     // مقدار لاتین ساعت را برای ارسال به سرور همگام نگه می‌دارد
@@ -124,20 +123,12 @@ document.addEventListener('DOMContentLoaded', function () {
      * getter مقدار را لاتین برمی‌گرداند (تا منطق داخلی flatpickr سالم بماند)
      * و setter مقدار را فارسی می‌نویسد (چیزی که کاربر می‌بیند).
      */
-    function persianizeNumInput(input) {
-        const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
-
-        input.type = 'text';              // input[type=number] ارقام فارسی را نمی‌پذیرد
+    function configureTimeSpinnerInput(input) {
+        input.type = 'text';
         input.setAttribute('inputmode', 'numeric');
-
-        Object.defineProperty(input, 'value', {
-            configurable: true,
-            get: function () { return enDigits(descriptor.get.call(this)); },
-            set: function (v) { descriptor.set.call(this, faDigits(String(v))); }
-        });
-
-        input.value = input.value;        // نمایش اولیه را فارسی کن
     }
+
+
 
     // ===== Flatpickr - انتخاب ساعت =====
     const timePicker = flatpickr(timeInput, {
@@ -149,13 +140,10 @@ document.addEventListener('DOMContentLoaded', function () {
         disableMobile: true,
         clickOpens: true,
         // خروجی فیلد ساعت با ارقام فارسی نوشته می‌شود
-        formatDate: function (date, format) {
-            return faDigits(flatpickr.formatDate(date, format));
-        },
-        // ورودی‌های رشته‌ای (مثل minTime) قبل از پارس، لاتین می‌شوند
         parseDate: function (dateStr, format) {
             return flatpickr.parseDate(enDigits(dateStr), format);
         },
+
         onOpen: function (selectedDates, dateStr, instance) {
             updateTimeMin();
             timeInteractedThisOpen = false; // ریست فلگ تعامل برای این بار باز شدن
@@ -196,8 +184,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // فارسی‌سازی ارقام اسپینر ساعت و دقیقه
-    persianizeNumInput(timePicker.hourElement);
-    persianizeNumInput(timePicker.minuteElement);
+    configureTimeSpinnerInput(timePicker.hourElement);
+    configureTimeSpinnerInput(timePicker.minuteElement);
 
     function resetTimeSpinners(instance) {
         instance.hourElement.value = String(instance.config.defaultHour).padStart(2, '0');
